@@ -1,6 +1,6 @@
 from huggingface_hub import InferenceClient
 
-client = InferenceClient(api_key="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")
+client = InferenceClient(api_key="apikey")
 while True:
     mesaj = input("User: ")
     if mesaj.lower() in ["exit", "quit", "bye"]:
