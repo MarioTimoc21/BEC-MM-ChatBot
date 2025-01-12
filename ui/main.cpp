@@ -16,8 +16,7 @@ size_t writeCallback(void* contents, size_t size, size_t nmemb, std::string* use
     }
 }
 
-// Helper function to send POST requests to Flask server
-std::string sendPostRequest(const std::string& url, const std::string& message) {
+std::string sendPostRequest(const std::string& url, const std::string& question) {
     CURL* curl = curl_easy_init(); // Initialize CURL
     if (!curl) {
         return "Error initializing CURL.";
@@ -35,7 +34,7 @@ std::string sendPostRequest(const std::string& url, const std::string& message) 
 
         // Format the JSON payload
         std::ostringstream oss;
-        oss << "{\"message\": \"" << message << "\"}";
+        oss << "{\"question\": \"" << question << "\"}"; // Use "question" as the key
         std::string payload = oss.str(); // Ensure the payload is a valid string
 
         // Set CURL options
@@ -70,7 +69,7 @@ std::string sendPostRequest(const std::string& url, const std::string& message) 
 }
 
 int main() {
-    std::string server_url = "http://192.168.1.5:5000/chat"; // Flask server URL
+    std::string server_url = "http://192.168.1.4:5000/chat"; // Flask server URL
     std::string user_input;
 
     std::cout << "Chat with the bot! Type 'exit' to quit.\n";
