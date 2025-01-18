@@ -4,7 +4,7 @@ import openai
 import json
 
 
-openai.api_key = "key"
+openai.api_key = "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"
 
 def load_json(file_path):
     with open(file_path, "r", encoding="utf-8") as f:
