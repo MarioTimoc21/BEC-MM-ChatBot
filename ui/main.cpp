@@ -3,6 +3,7 @@
 #include <iostream>
 #include <string>
 #include <sstream>
+#include <nlohmann/json.hpp>
 
 size_t writeCallback(void* contents, size_t size, size_t nmemb, std::string* userp) {
     if (userp == nullptr || contents == nullptr) {
@@ -16,10 +17,10 @@ size_t writeCallback(void* contents, size_t size, size_t nmemb, std::string* use
     }
 }
 
-std::string sendPostRequest(const std::string& url, const std::string& question) {
+std::pair<std::string, std::string> sendPostRequest(const std::string& url, const std::string& question) {
     CURL* curl = curl_easy_init();
     if (!curl) {
-        return "Error initializing CURL.";
+        return {"Error initializing CURL.", ""};
     }
 
     std::string response;
@@ -57,10 +58,17 @@ std::string sendPostRequest(const std::string& url, const std::string& question)
     curl_easy_cleanup(curl);
 
     if (response.empty()) {
-        response = "Error: Empty response from server.";
+        return {"Error parsing response.", ""};
     }
 
-    return response;
+    try {
+        auto json = nlohmann::json::parse(response);
+        std::string title = json.value("title", "Unknown Source");
+        std::string text = json.value("response", "No response provided.");
+        return {title, text};
+    } catch (...) {
+        return {"Error parsing response.", ""};
+    }
 }
 
 GtkWidget* create_message_bubble(const std::string& text, bool is_user) {
@@ -99,13 +107,16 @@ static void on_send_clicked(GtkWidget* button, gpointer data) {
         return;
     }
 
-    std::string server_url = "http://192.168.1.4:5000/chat";
-    std::string response = sendPostRequest(server_url, user_input);
+    std::string server_url = "http://172.20.10.4:5000/chat";
+    auto [title, response_text] = sendPostRequest(server_url, user_input);
 
     GtkWidget* user_bubble = create_message_bubble("You: " + std::string(user_input), true);
     gtk_box_pack_start(GTK_BOX(box), user_bubble, FALSE, FALSE, 0);
 
-    GtkWidget* bot_bubble = create_message_bubble("Bot: " + response, false);
+    GtkWidget* title_bubble = create_message_bubble(title, false);
+    GtkWidget* bot_bubble = create_message_bubble("Bot: " + response_text, false);
+
+    gtk_box_pack_start(GTK_BOX(box), title_bubble, FALSE, FALSE, 0);
     gtk_box_pack_start(GTK_BOX(box), bot_bubble, FALSE, FALSE, 0);
 
     gtk_entry_set_text(entry, "");

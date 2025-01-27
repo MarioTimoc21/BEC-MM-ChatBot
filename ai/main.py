@@ -1,17 +1,20 @@
 from flask import Flask, request, jsonify
 from sentence_transformers import SentenceTransformer, util
-import openai
+import google.generativeai as genai
 import json
 
+# Configure the Gemini API
+api_key = ""
+genai.configure(api_key=api_key)
 
-openai.api_key = "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"
-
+# Function to load and preprocess JSON context
 def load_json(file_path):
     with open(file_path, "r", encoding="utf-8") as f:
         data = json.load(f)
     contexts = [entry["context"] for entry in data["data"]]
     return contexts
 
+# Function to split text into manageable segments
 def split_text(text, max_length=500):
     words = text.split()
     segments = []
@@ -25,30 +28,33 @@ def split_text(text, max_length=500):
         segments.append(" ".join(current_segment))
     return segments
 
+# Function to create index for searching context
 def create_index(segments):
     model = SentenceTransformer("all-MiniLM-L6-v2")
     embeddings = model.encode(segments, convert_to_tensor=True)
     return model, embeddings
 
+# Function to find the most relevant segment for a query
 def find_relevant_segment(query, model, embeddings, segments):
     query_embedding = model.encode(query, convert_to_tensor=True)
     scores = util.cos_sim(query_embedding, embeddings)[0]
     best_idx = scores.argmax().item()
     return segments[best_idx]
 
-def get_response(user_input, context):
-    messages = [
-        {"role": "system", "content": "You are an expert capable of answering questions based on the given modules."},
-        {"role": "user", "content": f"Context: {context}\nQuestion: {user_input}"}
-    ]
-    response = openai.ChatCompletion.create(
-        model="gpt-3.5-turbo",
-        messages=messages,
-        max_tokens=150,
-        temperature=0.7
+# Function to call Gemini API with a query and context
+def get_gemini_response(user_input, context):
+    prompt = f"Context: {context}\nQuestion: {user_input}"
+    model = genai.GenerativeModel("gemini-1.5-flash")
+    response = model.generate_content(
+        prompt,
+        generation_config=genai.GenerationConfig(
+            max_output_tokens=1000,
+            temperature=0.7
+        )
     )
-    return response.choices[0].message['content']
+    return response.text
 
+# Load context from JSON
 contexts = load_json("modele_cleaned.json")
 full_context = " ".join(contexts)
 segments = split_text(full_context, max_length=500)
@@ -64,11 +70,25 @@ def chat():
     if not user_question:
         return jsonify({"error": "No question provided"}), 400
 
+    # Find relevant context
     relevant_segment = find_relevant_segment(user_question, model, embeddings, segments)
 
-    response = get_response(user_question, relevant_segment)
+    # Use module context if available; otherwise, fallback to general knowledge
+    if relevant_segment.strip():  # If relevant context is found
+        title = "Based on Modules"
+        context = relevant_segment
+    else:  # Fallback to general model knowledge
+        title = "Based on Model Knowledge"
+        context = "General Knowledge"
 
-    return response
+    # Generate the response
+    response = get_gemini_response(user_question, context)
+
+    return jsonify({
+        "title": title,
+        "response": response
+    })
+
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000, debug=True)
