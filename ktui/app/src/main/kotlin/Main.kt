@@ -54,13 +54,39 @@ fun ChatUI() {
         ) {
             Text("BEC-MM ChatBot", fontSize = 24.sp, color = textColor)
             Row {
-                Button(onClick = { chatHistory.add("Help: Type a question and press Enter or click Send." to false) }) {
+                Button(onClick = { chatHistory.add("Help: Type a question based on the modules and click Send." to false) }) {
                     Text("Help")
                 }
                 Spacer(modifier = Modifier.width(8.dp))
-                Button(onClick = { chatHistory.add("EXAMPLE TEXT" to false) }) {
+                Button(onClick = { 
+                    chatHistory.add(
+                        """
+                        Faculty of Automatic Control and Computer Science
+                        
+                        "Gender, Digitalization, Green: Ensuring a Sustainable Future for all in Europe" 
+                        Ref. Project: 2023-1-RO01- KA220-HED-000154433
+                        
+                        Partnership:
+                        - Universitatea de Stiinte Agricole si Medicina Veterinara, Bucuresti, Romania
+                        - Universitatea Nationala de Stiinta si Tehnologie POLITEHNICA București, Romania
+                        - Universitat Autonoma de Barcelona, Espana
+                        - Universidade do Porto, República Portuguesa
+                        - Uzhgorodskyi Nacionalnyi Universitet, Ukraina
+                        
+                        Course Coordinators: Mihai Caramihai, Daniel Chis.
+                        
+                        Students:
+                        - Stefan Bucur  -  stefan.bucur0707@stud.acs.upb.ro
+                        - Costin Grasu  -  costin.grasu@stud.acs.upb.ro
+                        - Mario Timoc  -  ovidiu_mario.timoc@stud.acs.upb.ro
+                        - Miruna Tancu  -  miruna.tancu@stud.acs.upb.ro
+                        - Eduard Simion  -  eduard.simion2410@stud.acs.upb.ro
+                        """.trimIndent() to false
+                    ) 
+                }) {
                     Text("Credentials")
                 }
+                
                 Spacer(modifier = Modifier.width(8.dp))
                 Switch(checked = isDarkMode, onCheckedChange = { isDarkMode = it })
             }

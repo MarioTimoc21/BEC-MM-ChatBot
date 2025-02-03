@@ -24,14 +24,22 @@ compose.desktop {
     application {
         mainClass = "MainKt"
         nativeDistributions {
-            targetFormats(org.jetbrains.compose.desktop.application.dsl.TargetFormat.Exe) // Only EXE, no MSI
+            targetFormats(org.jetbrains.compose.desktop.application.dsl.TargetFormat.Exe) 
             packageName = "BECMMChatBot"
             packageVersion = "1.0.0"
             description = "BEC-MM ChatBot Application"
-            vendor = "jungle speedd"
+            vendor = "Jungle Speedd"
+
+            windows {
+                shortcut = false 
+                perUserInstall = false 
+                menuGroup = "" 
+                upgradeUuid = ""
+            }
         }
     }
 }
+
 
 
 
