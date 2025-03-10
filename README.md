@@ -1,30 +1,28 @@
 # BEC-MM-ChatBot
 
-To run the application, run the ChatbotAPP.exe in the main folder.
-It might throw a "Windows protected your PC" warning, it is fine, just run it.
-When starting the app, a terminal and then the application will start automatically within a few seconds.
-It might take a bit before the app is properly initialized and it starts working well.
+## About the Project
+BEC-MM-ChatBot is designed to answer questions based on modules related to the project **“Fostering the Transversal Digital Competences in Higher Education”** (Acronym: FTDCHE). This project, referenced as **2022-1-ES01-KA220-HED-000089861**, is led by **Universitatea din Malaga**, with **UNSTPB** as a partner alongside **Universitatea din Primorska (Slovenia)** and **Universitatea de Științe Aplicate (UCLL - Belgia)**.
+
+## Running the Application
+To run the application, execute `ChatbotAPP.exe` located in the main folder.
+
+- You might encounter a "Windows protected your PC" warning; this is normal. Simply choose to run the application.
+- Upon starting, a terminal window will open, followed by the chatbot application within a few seconds.
+- Please be patient, as the app may take some time to initialize properly before functioning as expected.
 
 Thank you for using our app!
 
+---
 
+## Downloading/Cloning from GitHub
 
-# IF DOWNLOADING/CLONING FROM GITHUB
+If you are downloading or cloning from GitHub, follow these steps:
 
-Assuming git is already installed:
-Git LFS will be needed (Git for large files - over 100mb).
-Download & Install it from the official release page: https://git-lfs.github.com/
+### Prerequisites
+Ensure that Git is installed on your system. Additionally, you will need **Git LFS (Large File Storage)** for handling files over 100MB.
 
-After the setup is done, open command prompt/powershell and run:
-git lfs install
-
-After it is installed, clone into the directory of your choice using:
-git clone https://github.com/costingrasu/BEC-MM-ChatBot.git
-
-Might be needed but not neccesary: 
-After moving into the BEC-MM-Chatbot folder (with 'cd BEC-MM-ChatBot' for example) you might need to also run: 
-git lfs pull
-
-Thats it, it should work.
-
-
+### Installing Git LFS
+1. Download and install Git LFS from the official release page: [Git LFS](https://git-lfs.github.com/)
+2. After installation, open Command Prompt or PowerShell and run:
+   ```sh
+   git lfs install
